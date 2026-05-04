@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="refresh" content="300">
+<title>V3 Trader OS | 三板块实时监控</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d1117;color:#e6edf3;font-family:-apple-system,PingFang SC,Helvetica,sans-serif;padding:20px;max-width:900px;margin:0 auto}
+h1{font-size:1.4em;margin-bottom:6px}
+h1 span{color:#58a6ff}
+.sub{color:#8b949e;font-size:.8em;margin-bottom:20px}
+.card{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:16px;margin-bottom:14px}
+.card h2{font-size:1em;margin-bottom:10px;color:#f0f6fc}
+.sentiment{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.badge{padding:4px 12px;border-radius:20px;font-weight:bold;font-size:.85em}
+.badge-bull{background:#1a3a2a;color:#3fb950;border:1px solid #3fb950}
+.badge-bear{background:#3a1a1a;color:#f85149;border:1px solid #f85149}
+.badge-neutral{background:#1a2a3a;color:#d2991d;border:1px solid #d2991d}
+.stat{font-size:.85em;color:#8b949e}
+.stat b{color:#e6edf3}
+.sectors{display:flex;flex-wrap:wrap;gap:6px}
+.sector-tag{padding:3px 10px;border-radius:12px;font-size:.8em;background:#1a2332;border:1px solid #30363d}
+.sector-tag.hot{background:#1a2a1a;border-color:#2ea043;color:#3fb950}
+.sector-tag.warm{background:#2a1a0a;border-color:#bb8009;color:#d2991d}
+table{width:100%;border-collapse:collapse;font-size:.82em}
+th{text-align:left;padding:6px 8px;color:#8b949e;font-weight:normal;border-bottom:1px solid #30363d;font-size:.75em}
+td{padding:6px 8px;border-bottom:1px solid #21262d}
+.up{color:#3fb950}.down{color:#f85149}
+.chip{display:inline-block;padding:1px 6px;border-radius:10px;font-size:.75em}
+.chip-cyb{background:#1a2332;color:#58a6ff}
+.chip-kcb{background:#1a2332;color:#bc8cff}
+.chip-bj{background:#1a2332;color:#f0883e}
+.footer{text-align:center;color:#484f58;font-size:.7em;margin-top:30px}
+.refresh{color:#58a6ff}
+</style>
+</head>
+<body>
+<h1>⚡ V3 <span>Trader OS</span></h1>
+<div class="sub">创业板 + 科创板 + 北交所 | 每5分钟自动刷新 | <span class="refresh" id="time">--</span></div>
+
+<!-- 大盘情绪 -->
+<div class="card">
+<h2>📊 第一级：大盘情绪</h2>
+<div class="sentiment" id="sentiment-area">
+<span class="badge badge-neutral">🟡 等待数据</span>
+<span class="stat">涨跌比: <b>--</b></span>
+</div>
+<div style="margin-top:8px;font-size:.82em;color:#8b949e" id="indices-area">--</div>
+</div>
+
+<!-- 板块热度 -->
+<div class="card">
+<h2>🔥 第二级：板块热度</h2>
+<div class="sectors" id="sectors-area">--</div>
+</div>
+
+<!-- Tier1 -->
+<div class="card">
+<h2>🟢 第三级：Tier1 主升浪回踩</h2>
+<table><thead><tr><th>代码</th><th>名称</th><th>板块</th><th>收盘</th><th>MA250</th><th>偏离</th></tr></thead>
+<tbody id="tier1-area"><tr><td colspan="6" style="color:#8b949e">数据加载中...</td></tr></tbody></table>
+</div>
+
+<!-- Tier2 -->
+<div class="card">
+<h2>🟡 第三级：Tier2 低洼启动</h2>
+<table><thead><tr><th>代码</th><th>名称</th><th>板块</th><th>收盘</th><th>MA250</th><th>偏离</th></tr></thead>
+<tbody id="tier2-area"><tr><td colspan="6" style="color:#8b949e">数据加载中...</td></tr></tbody></table>
+</div>
+
+<div class="footer">
+V3 Trader OS · Powered by Cola · Cyber范蠡
+</div>
+
+<script>
+// 数据注入点 (由 pre_market.py 生成时替换)
+const DATA = {"sentiment": {"sentiment": "中性", "signal": "🟡 正常交易", "position": "正常", "ad_ratio": 300.0, "total_up": 300, "total_down": 0, "indices": {"创业板": {"price": 3677.15, "change_pct": -0.27, "volume": 207981816}, "科创板": {"price": 51.48, "change_pct": 4.34, "volume": 247022}, "北证50": {"price": 1330.09, "change_pct": -0.12, "volume": 7914658}}}, "sectors": [{"name": "燃料电池", "change_pct": 9.46, "type": "行业"}, {"name": "集成电路制造", "change_pct": 6.56, "type": "行业"}, {"name": "体育Ⅲ", "change_pct": 6.43, "type": "行业"}, {"name": "体育Ⅱ", "change_pct": 6.43, "type": "行业"}, {"name": "图片媒体", "change_pct": 5.21, "type": "行业"}, {"name": "锂", "change_pct": 5.13, "type": "行业"}, {"name": "模拟芯片设计", "change_pct": 4.63, "type": "行业"}, {"name": "先进封装", "change_pct": 3.82, "type": "概念"}, {"name": "能源金属", "change_pct": 3.8, "type": "行业"}, {"name": "2026—季报扭亏", "change_pct": 3.52, "type": "概念"}, {"name": "半导体设备", "change_pct": 3.43, "type": "行业"}, {"name": "PLC概念", "change_pct": 3.41, "type": "概念"}], "stocks": null, "generated_at": "2026-05-05 01:36:02"};
+
+function render(){
+  document.getElementById('time').textContent = new Date().toLocaleString('zh-CN');
+  
+  if(!DATA.sentiment) return;
+  const s = DATA.sentiment;
+  const badge = s.sentiment==='积极'?'badge-bull':(s.sentiment==='低迷'?'badge-bear':'badge-neutral');
+  const emoji = s.sentiment==='积极'?'🟢':(s.sentiment==='低迷'?'🔴':'🟡');
+  document.getElementById('sentiment-area').innerHTML = 
+    `<span class="badge ${badge}">${emoji} ${s.sentiment}</span>
+     <span class="stat">仓位: <b>${s.position}</b></span>
+     <span class="stat">涨跌比: <b>${s.ad_ratio}</b></span>
+     <span class="stat">↑<b>${s.total_up}</b> ↓<b>${s.total_down}</b></span>`;
+  
+  let idxHtml = '';
+  for(const [k,v] of Object.entries(s.indices||{})){
+    if(v.error) continue;
+    const cls = v.change_pct>=0?'up':'down';
+    idxHtml += `<span class="stat">${k}: <b class="${cls}">${v.price.toFixed(1)} (${v.change_pct>=0?'+':''}${v.change_pct.toFixed(2)}%)</b></span> `;
+  }
+  document.getElementById('indices-area').innerHTML = idxHtml;
+  
+  if(DATA.sectors){
+    let secHtml = '';
+    DATA.sectors.slice(0,12).forEach((sec,i) => {
+      const cls = i<3?'hot':(i<6?'warm':'');
+      secHtml += `<span class="sector-tag ${cls}">${sec.name} ${sec.change_pct>=0?'+':''}${sec.change_pct.toFixed(1)}%</span>`;
+    });
+    document.getElementById('sectors-area').innerHTML = secHtml;
+  }
+  
+  function renderStocks(id, stocks){
+    if(!stocks || stocks.length===0){
+      document.getElementById(id).innerHTML = '<tr><td colspan="6" style="color:#8b949e">暂无数据</td></tr>';
+      return;
+    }
+    let html = '';
+    stocks.forEach(s => {
+      const board = s[2]==='cyb'?'创':(s[2]==='kcb'?'科':'北');
+      const chipCls = s[2]==='cyb'?'chip-cyb':(s[2]==='kcb'?'chip-kcb':'chip-bj');
+      const devCls = s[5]>=0?'up':'down';
+      html += `<tr>
+        <td><span class="chip ${chipCls}">${board}</span> ${s[0]}</td>
+        <td>${s[1]}</td><td style="color:#8b949e">${s[6]||''}</td>
+        <td>${s[3].toFixed(1)}</td><td>${s[4].toFixed(1)}</td>
+        <td class="${devCls}">${s[5]>=0?'+':''}${s[5].toFixed(1)}%</td>
+      </tr>`;
+    });
+    document.getElementById(id).innerHTML = html;
+  }
+  
+  if(DATA.stocks){
+    renderStocks('tier1-area', DATA.stocks.tier1?.slice(0,15));
+    renderStocks('tier2-area', DATA.stocks.tier2?.slice(0,15));
+  }
+}
+
+window.onload = render;
+</script>
+</body>
+</html>
