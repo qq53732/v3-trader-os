@@ -3,19 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>V3 Trader OS</title>
+<title>V3 | Cyber范蠡</title>
 <style>
-:root{--bg:#0a0e14;--card:#12161e;--border:#1e2530;--text:#c5cdd8;--dim:#5c6670;--green:#0f0;--red:#f44;--blue:#4af;--gold:#fa0;--purple:#b4f}
+:root{--bg:#080c10;--card:#0e141a;--border:#1a2330;--text:#c8d0d8;--dim:#556070;--green:#00e673;--red:#ff4444;--blue:#44aaff;--gold:#ffaa00;--purple:#bb77ff;--jade:rgba(0,230,115,.08)}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--text);font:14px/1.5 'SF Mono','JetBrains Mono','PingFang SC',monospace;padding:24px;min-height:100vh}
-header{display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+body{background:var(--bg);color:var(--text);font:14px/1.6 'SF Mono','JetBrains Mono','PingFang SC','Noto Serif SC',monospace;padding:24px;min-height:100vh}
+body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 20% 0%,var(--jade) 0%,transparent 50%),radial-gradient(ellipse at 80% 100%,rgba(68,170,255,.04) 0%,transparent 50%);pointer-events:none;z-index:0}
+header{position:relative;z-index:1;display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
 .logo-area{display:flex;align-items:center;gap:10px}
-.logo-area img{height:32px;width:32px;border-radius:4px}
-header h1{font-size:1.2em;font-weight:600;letter-spacing:2px}
+.logo-area img{height:36px;width:36px;border-radius:6px;border:1px solid var(--border)}
+.brand{display:flex;flex-direction:column}
+header h1{font-size:1.1em;font-weight:600;letter-spacing:3px;line-height:1.2}
 header h1 em{color:var(--green);font-style:normal}
-.sig{font-size:.7em;color:var(--dim);margin-left:auto;text-align:right;line-height:1.4}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:16px}
+.tagline{font-size:.65em;color:var(--dim);letter-spacing:1px}
+.tagline span{color:var(--gold)}
+.sig{font-size:.68em;color:var(--dim);margin-left:auto;text-align:right;line-height:1.5;font-family:'Noto Serif SC','STSong','PingFang SC',serif}
+.grid{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card{position:relative;z-index:1;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:16px}
 .card h2{font-size:.85em;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;font-weight:400}
 .full{grid-column:1/-1}
 
@@ -61,8 +65,11 @@ footer{text-align:center;color:var(--dim);font-size:.7em;margin-top:32px;padding
 <header>
   <div class="logo-area">
     <img id="logo" src="logo.png" alt="logo" onerror="this.style.display='none'">
+    <div class="brand">
+      <h1>V3 <em>TRADER</em> OS</h1>
+      <div class="tagline">Cyber范蠡 · <span>计然之策</span> · 三聚三散</div>
+    </div>
   </div>
-  <h1>V3 <em>TRADER</em> OS</h1>
   <div class="sig">
     不谋万世者，不足谋一时<br>
     不谋全局者，不足谋一域<br>
@@ -105,11 +112,12 @@ footer{text-align:center;color:var(--dim);font-size:.7em;margin-top:32px;padding
 </div>
 
 <footer>
-  Refresh: <span class="blink">█</span> 交易日盘中每30min自动更新 · Cola @ qq53732
+  Cyber范蠡 · 观天之道 · 执天之行 · Cola @ qq53732
+  <br><span style="font-size:.85em;color:var(--dim)">交易日盘中每30min自动刷新</span>
 </footer>
 
 <script>
-const DATA = {"sentiment": {"sentiment": "中性", "signal": "🟡 正常交易", "position": "正常", "ad_ratio": 300.0, "total_up": 300, "total_down": 0, "indices": {"创业板": {"price": 3677.15, "change_pct": -0.27, "volume": 207981816}, "科创板": {"price": 51.48, "change_pct": 4.34, "volume": 247022}, "北证50": {"price": 1330.09, "change_pct": -0.12, "volume": 7914658}}}, "sectors": [{"name": "燃料电池", "change_pct": 9.46, "type": "行业"}, {"name": "集成电路制造", "change_pct": 6.56, "type": "行业"}, {"name": "体育Ⅲ", "change_pct": 6.43, "type": "行业"}, {"name": "体育Ⅱ", "change_pct": 6.43, "type": "行业"}, {"name": "图片媒体", "change_pct": 5.21, "type": "行业"}, {"name": "锂", "change_pct": 5.13, "type": "行业"}, {"name": "模拟芯片设计", "change_pct": 4.63, "type": "行业"}, {"name": "先进封装", "change_pct": 3.82, "type": "概念"}, {"name": "能源金属", "change_pct": 3.8, "type": "行业"}, {"name": "2026—季报扭亏", "change_pct": 3.52, "type": "概念"}, {"name": "半导体设备", "change_pct": 3.43, "type": "行业"}, {"name": "PLC概念", "change_pct": 3.41, "type": "概念"}], "stocks": {"tier1": [["920541", "铁大科技", "bjs", 12.1, 12.1, 0.03, "2026-04-30"], ["300978", "东箭科技", "cyb", 10.89, 10.88, 0.1, "2026-04-30"], ["688602", "康鹏科技", "kcb", 7.98, 7.97, 0.11, "2026-04-30"], ["920454", "同心传动", "bjs", 14.45, 14.43, 0.15, "2026-04-30"], ["300399", "天利科技", "cyb", 22.03, 21.98, 0.21, "2026-04-30"], ["301277", "新天地", "cyb", 11.4, 11.37, 0.23, "2026-04-30"], ["920720", "吉冈精密", "bjs", 12.03, 12.0, 0.24, "2026-04-30"], ["301009", "可靠股份", "cyb", 11.3, 11.27, 0.26, "2026-04-30"], ["300603", "立昂技术", "cyb", 10.2, 10.17, 0.29, "2026-04-30"], ["920455", "汇隆活塞", "bjs", 7.98, 7.95, 0.38, "2026-04-30"], ["920237", "力佳科技", "bjs", 19.72, 19.63, 0.46, "2026-04-30"], ["301185", "鸥玛软件", "cyb", 18.09, 18.0, 0.51, "2026-04-30"], ["688259", "创耀科技", "kcb", 38.32, 38.08, 0.63, "2026-04-30"], ["688075", "安旭生物", "kcb", 37.42, 37.17, 0.67, "2026-04-30"], ["300074", "华平股份", "cyb", 4.41, 4.38, 0.77, "2026-04-30"]], "tier2": [["300266", "兴源环境", "cyb", 2.43, 2.43, 0.0, "2026-04-30"], ["688595", "芯海科技", "kcb", 34.26, 34.26, 0.0, "2026-04-30"], ["688443", "智翔金泰", "kcb", 29.62, 29.63, -0.02, "2026-04-30"], ["301221", "光庭信息", "cyb", 47.84, 47.87, -0.06, "2026-04-30"], ["920171", "志晟信息", "bjs", 20.45, 20.47, -0.09, "2026-04-30"], ["300119", "瑞普生物", "cyb", 18.0, 18.02, -0.13, "2026-04-30"], ["300993", "玉马科技", "cyb", 12.24, 12.26, -0.19, "2026-04-30"], ["300375", "鹏翎股份", "cyb", 4.81, 4.82, -0.2, "2026-04-30"], ["301591", "肯特股份", "cyb", 39.89, 39.97, -0.2, "2026-04-30"], ["300908", "仲景食品", "cyb", 28.7, 28.77, -0.23, "2026-04-30"], ["300381", "溢多利", "cyb", 6.92, 6.94, -0.33, "2026-04-30"], ["301595", "太力科技", "cyb", 44.62, 44.77, -0.33, "2026-04-30"], ["920087", "秋乐种业", "bjs", 13.58, 13.63, -0.34, "2026-04-30"], ["920167", "同享科技", "bjs", 19.3, 19.38, -0.44, "2026-04-30"], ["920221", "易实精密", "bjs", 15.1, 15.17, -0.44, "2026-04-30"]], "tier1_count": 1136, "tier2_count": 161}, "generated_at": "2026-05-05 01:47:51"};
+const DATA = {"sentiment": {"sentiment": "中性", "signal": "🟡 正常交易", "position": "正常", "ad_ratio": 300.0, "total_up": 300, "total_down": 0, "indices": {"创业板": {"price": 3677.15, "change_pct": -0.27, "volume": 207981816}, "科创板": {"price": 51.48, "change_pct": 4.34, "volume": 247022}, "北证50": {"price": 1330.09, "change_pct": -0.12, "volume": 7914658}}}, "sectors": [{"name": "燃料电池", "change_pct": 9.46, "type": "行业"}, {"name": "集成电路制造", "change_pct": 6.56, "type": "行业"}, {"name": "体育Ⅲ", "change_pct": 6.43, "type": "行业"}, {"name": "体育Ⅱ", "change_pct": 6.43, "type": "行业"}, {"name": "图片媒体", "change_pct": 5.21, "type": "行业"}, {"name": "锂", "change_pct": 5.13, "type": "行业"}, {"name": "模拟芯片设计", "change_pct": 4.63, "type": "行业"}, {"name": "先进封装", "change_pct": 3.82, "type": "概念"}, {"name": "能源金属", "change_pct": 3.8, "type": "行业"}, {"name": "2026—季报扭亏", "change_pct": 3.52, "type": "概念"}, {"name": "半导体设备", "change_pct": 3.43, "type": "行业"}, {"name": "PLC概念", "change_pct": 3.41, "type": "概念"}], "stocks": {"tier1": [["920541", "铁大科技", "bjs", 12.1, 12.1, 0.03, "2026-04-30"], ["300978", "东箭科技", "cyb", 10.89, 10.88, 0.1, "2026-04-30"], ["688602", "康鹏科技", "kcb", 7.98, 7.97, 0.11, "2026-04-30"], ["920454", "同心传动", "bjs", 14.45, 14.43, 0.15, "2026-04-30"], ["300399", "天利科技", "cyb", 22.03, 21.98, 0.21, "2026-04-30"], ["301277", "新天地", "cyb", 11.4, 11.37, 0.23, "2026-04-30"], ["920720", "吉冈精密", "bjs", 12.03, 12.0, 0.24, "2026-04-30"], ["301009", "可靠股份", "cyb", 11.3, 11.27, 0.26, "2026-04-30"], ["300603", "立昂技术", "cyb", 10.2, 10.17, 0.29, "2026-04-30"], ["920455", "汇隆活塞", "bjs", 7.98, 7.95, 0.38, "2026-04-30"], ["920237", "力佳科技", "bjs", 19.72, 19.63, 0.46, "2026-04-30"], ["301185", "鸥玛软件", "cyb", 18.09, 18.0, 0.51, "2026-04-30"], ["688259", "创耀科技", "kcb", 38.32, 38.08, 0.63, "2026-04-30"], ["688075", "安旭生物", "kcb", 37.42, 37.17, 0.67, "2026-04-30"], ["300074", "华平股份", "cyb", 4.41, 4.38, 0.77, "2026-04-30"]], "tier2": [["300266", "兴源环境", "cyb", 2.43, 2.43, 0.0, "2026-04-30"], ["688595", "芯海科技", "kcb", 34.26, 34.26, 0.0, "2026-04-30"], ["688443", "智翔金泰", "kcb", 29.62, 29.63, -0.02, "2026-04-30"], ["301221", "光庭信息", "cyb", 47.84, 47.87, -0.06, "2026-04-30"], ["920171", "志晟信息", "bjs", 20.45, 20.47, -0.09, "2026-04-30"], ["300119", "瑞普生物", "cyb", 18.0, 18.02, -0.13, "2026-04-30"], ["300993", "玉马科技", "cyb", 12.24, 12.26, -0.19, "2026-04-30"], ["300375", "鹏翎股份", "cyb", 4.81, 4.82, -0.2, "2026-04-30"], ["301591", "肯特股份", "cyb", 39.89, 39.97, -0.2, "2026-04-30"], ["300908", "仲景食品", "cyb", 28.7, 28.77, -0.23, "2026-04-30"], ["300381", "溢多利", "cyb", 6.92, 6.94, -0.33, "2026-04-30"], ["301595", "太力科技", "cyb", 44.62, 44.77, -0.33, "2026-04-30"], ["920087", "秋乐种业", "bjs", 13.58, 13.63, -0.34, "2026-04-30"], ["920167", "同享科技", "bjs", 19.3, 19.38, -0.44, "2026-04-30"], ["920221", "易实精密", "bjs", 15.1, 15.17, -0.44, "2026-04-30"]], "tier1_count": 1136, "tier2_count": 161}, "generated_at": "2026-05-05 01:49:59"};
 
 function bd(code){
   if(code.startsWith('300')||code.startsWith('301')) return '<span class="board bd-cyb">创</span>';
