@@ -3,138 +3,189 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="refresh" content="300">
-<title>V3 Trader OS | 三板块实时监控</title>
+<title>V3 Trader OS</title>
 <style>
+:root{--bg:#0a0e14;--card:#12161e;--border:#1e2530;--text:#c5cdd8;--dim:#5c6670;--green:#0f0;--red:#f44;--blue:#4af;--gold:#fa0;--purple:#b4f}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#0d1117;color:#e6edf3;font-family:-apple-system,PingFang SC,Helvetica,sans-serif;padding:20px;max-width:900px;margin:0 auto}
-h1{font-size:1.4em;margin-bottom:6px}
-h1 span{color:#58a6ff}
-.sub{color:#8b949e;font-size:.8em;margin-bottom:20px}
-.card{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:16px;margin-bottom:14px}
-.card h2{font-size:1em;margin-bottom:10px;color:#f0f6fc}
-.sentiment{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-.badge{padding:4px 12px;border-radius:20px;font-weight:bold;font-size:.85em}
-.badge-bull{background:#1a3a2a;color:#3fb950;border:1px solid #3fb950}
-.badge-bear{background:#3a1a1a;color:#f85149;border:1px solid #f85149}
-.badge-neutral{background:#1a2a3a;color:#d2991d;border:1px solid #d2991d}
-.stat{font-size:.85em;color:#8b949e}
-.stat b{color:#e6edf3}
-.sectors{display:flex;flex-wrap:wrap;gap:6px}
-.sector-tag{padding:3px 10px;border-radius:12px;font-size:.8em;background:#1a2332;border:1px solid #30363d}
-.sector-tag.hot{background:#1a2a1a;border-color:#2ea043;color:#3fb950}
-.sector-tag.warm{background:#2a1a0a;border-color:#bb8009;color:#d2991d}
-table{width:100%;border-collapse:collapse;font-size:.82em}
-th{text-align:left;padding:6px 8px;color:#8b949e;font-weight:normal;border-bottom:1px solid #30363d;font-size:.75em}
-td{padding:6px 8px;border-bottom:1px solid #21262d}
-.up{color:#3fb950}.down{color:#f85149}
-.chip{display:inline-block;padding:1px 6px;border-radius:10px;font-size:.75em}
-.chip-cyb{background:#1a2332;color:#58a6ff}
-.chip-kcb{background:#1a2332;color:#bc8cff}
-.chip-bj{background:#1a2332;color:#f0883e}
-.footer{text-align:center;color:#484f58;font-size:.7em;margin-top:30px}
-.refresh{color:#58a6ff}
+body{background:var(--bg);color:var(--text);font:14px/1.5 'SF Mono','JetBrains Mono','PingFang SC',monospace;padding:24px;min-height:100vh}
+header{display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.logo-area{display:flex;align-items:center;gap:10px}
+.logo-area img{height:32px;width:32px;border-radius:4px}
+header h1{font-size:1.2em;font-weight:600;letter-spacing:2px}
+header h1 em{color:var(--green);font-style:normal}
+.sig{font-size:.7em;color:var(--dim);margin-left:auto;text-align:right;line-height:1.4}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:16px}
+.card h2{font-size:.85em;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;font-weight:400}
+.full{grid-column:1/-1}
+
+/* 大盘情绪条 */
+.sentiment-bar{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.emoji{font-size:2em}
+.big-label{font-size:1.1em;font-weight:600}
+.big-label.bull{color:var(--green)}.big-label.bear{color:var(--red)}.big-label.neutral{color:var(--gold)}
+.meta{font-size:.8em;color:var(--dim)}
+.meta b{color:var(--text)}
+.idx{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px}
+.idx-item{font-size:.8em;color:var(--dim)}
+.idx-item .val{color:var(--text);font-weight:600}
+.idx-item .up{color:var(--green)}.idx-item .down{color:var(--red)}
+
+/* 板块列表 */
+.sec-list{display:flex;flex-direction:column;gap:4px}
+.sec-row{display:flex;align-items:center;gap:8px;padding:4px 8px;border-radius:4px;font-size:.82em}
+.sec-row:nth-child(-n+3){background:#0a1a0a;border-left:2px solid var(--green)}
+.sec-row .rank{color:var(--dim);width:16px;text-align:right}
+.sec-row .name{flex:1}
+.sec-row .chg{font-weight:600;text-align:right;width:60px}
+.sec-row .chg.up{color:var(--green)}.sec-row .chg.down{color:var(--red)}
+
+/* 股票表 */
+.stock-table{width:100%;border-collapse:collapse;font-size:.78em}
+.stock-table th{text-align:left;padding:6px 8px;color:var(--dim);font-weight:400;border-bottom:1px solid var(--border);font-size:.75em}
+.stock-table td{padding:5px 8px;border-bottom:1px solid rgba(30,37,48,.5)}
+.stock-table .code{color:var(--dim);font-size:.9em}
+.stock-table .board{font-size:.7em;padding:1px 5px;border-radius:3px;margin-right:4px}
+.bd-cyb{background:#0a1a2a;color:var(--blue)}
+.bd-kcb{background:#1a0a2a;color:var(--purple)}
+.bd-bj{background:#2a1a0a;color:var(--gold)}
+.up{color:var(--green)}.down{color:var(--red)}
+
+footer{text-align:center;color:var(--dim);font-size:.7em;margin-top:32px;padding-top:16px;border-top:1px solid var(--border)}
+.blink{animation:blink 1.2s step-end infinite}@keyframes blink{50%{opacity:0}}
+
+@media(max-width:768px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<h1>⚡ V3 <span>Trader OS</span></h1>
-<div class="sub">创业板 + 科创板 + 北交所 | 每5分钟自动刷新 | <span class="refresh" id="time">--</span></div>
+<header>
+  <div class="logo-area">
+    <img id="logo" src="" alt="logo" onerror="this.style.display='none'" style="display:none">
+  </div>
+  <h1>V3 <em>TRADER</em> OS</h1>
+  <div class="sig">
+    不谋万世者，不足谋一时<br>
+    不谋全局者，不足谋一域<br>
+    <span style="color:var(--gold)">— 春华秋实</span>
+  </div>
+</header>
 
-<!-- 大盘情绪 -->
-<div class="card">
-<h2>📊 第一级：大盘情绪</h2>
-<div class="sentiment" id="sentiment-area">
-<span class="badge badge-neutral">🟡 等待数据</span>
-<span class="stat">涨跌比: <b>--</b></span>
-</div>
-<div style="margin-top:8px;font-size:.82em;color:#8b949e" id="indices-area">--</div>
+<div class="grid">
+  <!-- 大盘情绪 -->
+  <div class="card full" id="sentiment-card">
+    <h2>▸ 大盘情绪 <span id="update-time" style="font-weight:400;color:var(--dim);float:right"></span></h2>
+    <div id="sentiment-area">--</div>
+  </div>
+
+  <!-- 板块热度 -->
+  <div class="card">
+    <h2>▸ 板块热度</h2>
+    <div class="sec-list" id="sectors-area">--</div>
+  </div>
+
+  <!-- 三大指数 -->
+  <div class="card">
+    <h2>▸ 三大指数</h2>
+    <div id="indices-area">--</div>
+  </div>
+
+  <!-- Tier1 -->
+  <div class="card">
+    <h2>▸ Tier1 主升浪回踩 <span id="t1-count" style="font-weight:400;color:var(--dim)"></span></h2>
+    <table class="stock-table"><thead><tr><th>代码</th><th>名称</th><th>CMP</th><th>MA250</th><th>Δ%</th></tr></thead>
+    <tbody id="tier1-area"></tbody></table>
+  </div>
+
+  <!-- Tier2 -->
+  <div class="card">
+    <h2>▸ Tier2 低洼启动 <span id="t2-count" style="font-weight:400;color:var(--dim)"></span></h2>
+    <table class="stock-table"><thead><tr><th>代码</th><th>名称</th><th>CMP</th><th>MA250</th><th>Δ%</th></tr></thead>
+    <tbody id="tier2-area"></tbody></table>
+  </div>
 </div>
 
-<!-- 板块热度 -->
-<div class="card">
-<h2>🔥 第二级：板块热度</h2>
-<div class="sectors" id="sectors-area">--</div>
-</div>
-
-<!-- Tier1 -->
-<div class="card">
-<h2>🟢 第三级：Tier1 主升浪回踩</h2>
-<table><thead><tr><th>代码</th><th>名称</th><th>板块</th><th>收盘</th><th>MA250</th><th>偏离</th></tr></thead>
-<tbody id="tier1-area"><tr><td colspan="6" style="color:#8b949e">数据加载中...</td></tr></tbody></table>
-</div>
-
-<!-- Tier2 -->
-<div class="card">
-<h2>🟡 第三级：Tier2 低洼启动</h2>
-<table><thead><tr><th>代码</th><th>名称</th><th>板块</th><th>收盘</th><th>MA250</th><th>偏离</th></tr></thead>
-<tbody id="tier2-area"><tr><td colspan="6" style="color:#8b949e">数据加载中...</td></tr></tbody></table>
-</div>
-
-<div class="footer">
-V3 Trader OS · Powered by Cola · Cyber范蠡
-</div>
+<footer>
+  Refresh: <span class="blink">█</span> 交易日盘中每30min自动更新 · Cola @ qq53732
+</footer>
 
 <script>
-// 数据注入点 (由 pre_market.py 生成时替换)
-const DATA = {"sentiment": {"sentiment": "中性", "signal": "🟡 正常交易", "position": "正常", "ad_ratio": 300.0, "total_up": 300, "total_down": 0, "indices": {"创业板": {"price": 3677.15, "change_pct": -0.27, "volume": 207981816}, "科创板": {"price": 51.48, "change_pct": 4.34, "volume": 247022}, "北证50": {"price": 1330.09, "change_pct": -0.12, "volume": 7914658}}}, "sectors": [{"name": "燃料电池", "change_pct": 9.46, "type": "行业"}, {"name": "集成电路制造", "change_pct": 6.56, "type": "行业"}, {"name": "体育Ⅲ", "change_pct": 6.43, "type": "行业"}, {"name": "体育Ⅱ", "change_pct": 6.43, "type": "行业"}, {"name": "图片媒体", "change_pct": 5.21, "type": "行业"}, {"name": "锂", "change_pct": 5.13, "type": "行业"}, {"name": "模拟芯片设计", "change_pct": 4.63, "type": "行业"}, {"name": "先进封装", "change_pct": 3.82, "type": "概念"}, {"name": "能源金属", "change_pct": 3.8, "type": "行业"}, {"name": "2026—季报扭亏", "change_pct": 3.52, "type": "概念"}, {"name": "半导体设备", "change_pct": 3.43, "type": "行业"}, {"name": "PLC概念", "change_pct": 3.41, "type": "概念"}], "stocks": {"tier1": [["920541", "铁大科技", "bjs", 12.1, 12.1, 0.03, "2026-04-30"], ["300978", "东箭科技", "cyb", 10.89, 10.88, 0.1, "2026-04-30"], ["688602", "康鹏科技", "kcb", 7.98, 7.97, 0.11, "2026-04-30"], ["920454", "同心传动", "bjs", 14.45, 14.43, 0.15, "2026-04-30"], ["300399", "天利科技", "cyb", 22.03, 21.98, 0.21, "2026-04-30"], ["301277", "新天地", "cyb", 11.4, 11.37, 0.23, "2026-04-30"], ["920720", "吉冈精密", "bjs", 12.03, 12.0, 0.24, "2026-04-30"], ["301009", "可靠股份", "cyb", 11.3, 11.27, 0.26, "2026-04-30"], ["300603", "立昂技术", "cyb", 10.2, 10.17, 0.29, "2026-04-30"], ["920455", "汇隆活塞", "bjs", 7.98, 7.95, 0.38, "2026-04-30"], ["300527", "ST应急", "cyb", 8.15, 8.12, 0.41, "2026-04-30"], ["920237", "力佳科技", "bjs", 19.72, 19.63, 0.46, "2026-04-30"], ["301185", "鸥玛软件", "cyb", 18.09, 18.0, 0.51, "2026-04-30"], ["688259", "创耀科技", "kcb", 38.32, 38.08, 0.63, "2026-04-30"], ["688075", "安旭生物", "kcb", 37.42, 37.17, 0.67, "2026-04-30"]], "tier2": [["300266", "兴源环境", "cyb", 2.43, 2.43, 0.0, "2026-04-30"], ["688595", "芯海科技", "kcb", 34.26, 34.26, 0.0, "2026-04-30"], ["688443", "智翔金泰", "kcb", 29.62, 29.63, -0.02, "2026-04-30"], ["301221", "光庭信息", "cyb", 47.84, 47.87, -0.06, "2026-04-30"], ["920171", "志晟信息", "bjs", 20.45, 20.47, -0.09, "2026-04-30"], ["300119", "瑞普生物", "cyb", 18.0, 18.02, -0.13, "2026-04-30"], ["300993", "玉马科技", "cyb", 12.24, 12.26, -0.19, "2026-04-30"], ["300375", "鹏翎股份", "cyb", 4.81, 4.82, -0.2, "2026-04-30"], ["301591", "肯特股份", "cyb", 39.89, 39.97, -0.2, "2026-04-30"], ["300908", "仲景食品", "cyb", 28.7, 28.77, -0.23, "2026-04-30"], ["300381", "溢多利", "cyb", 6.92, 6.94, -0.33, "2026-04-30"], ["301595", "太力科技", "cyb", 44.62, 44.77, -0.33, "2026-04-30"], ["920087", "秋乐种业", "bjs", 13.58, 13.63, -0.34, "2026-04-30"], ["920167", "同享科技", "bjs", 19.3, 19.38, -0.44, "2026-04-30"], ["920221", "易实精密", "bjs", 15.1, 15.17, -0.44, "2026-04-30"]], "tier1_count": 1166, "tier2_count": 162}, "generated_at": "2026-05-05 01:37:21"};
+const DATA = {"sentiment": {"sentiment": "中性", "signal": "🟡 正常交易", "position": "正常", "ad_ratio": 300.0, "total_up": 300, "total_down": 0, "indices": {"创业板": {"price": 3677.15, "change_pct": -0.27, "volume": 207981816}, "科创板": {"price": 51.48, "change_pct": 4.34, "volume": 247022}, "北证50": {"price": 1330.09, "change_pct": -0.12, "volume": 7914658}}}, "sectors": [{"name": "燃料电池", "change_pct": 9.46, "type": "行业"}, {"name": "集成电路制造", "change_pct": 6.56, "type": "行业"}, {"name": "体育Ⅲ", "change_pct": 6.43, "type": "行业"}, {"name": "体育Ⅱ", "change_pct": 6.43, "type": "行业"}, {"name": "图片媒体", "change_pct": 5.21, "type": "行业"}, {"name": "锂", "change_pct": 5.13, "type": "行业"}, {"name": "模拟芯片设计", "change_pct": 4.63, "type": "行业"}, {"name": "先进封装", "change_pct": 3.82, "type": "概念"}, {"name": "能源金属", "change_pct": 3.8, "type": "行业"}, {"name": "2026—季报扭亏", "change_pct": 3.52, "type": "概念"}, {"name": "半导体设备", "change_pct": 3.43, "type": "行业"}, {"name": "PLC概念", "change_pct": 3.41, "type": "概念"}], "stocks": {"tier1": [["920541", "铁大科技", "bjs", 12.1, 12.1, 0.03, "2026-04-30"], ["300978", "东箭科技", "cyb", 10.89, 10.88, 0.1, "2026-04-30"], ["688602", "康鹏科技", "kcb", 7.98, 7.97, 0.11, "2026-04-30"], ["920454", "同心传动", "bjs", 14.45, 14.43, 0.15, "2026-04-30"], ["300399", "天利科技", "cyb", 22.03, 21.98, 0.21, "2026-04-30"], ["301277", "新天地", "cyb", 11.4, 11.37, 0.23, "2026-04-30"], ["920720", "吉冈精密", "bjs", 12.03, 12.0, 0.24, "2026-04-30"], ["301009", "可靠股份", "cyb", 11.3, 11.27, 0.26, "2026-04-30"], ["300603", "立昂技术", "cyb", 10.2, 10.17, 0.29, "2026-04-30"], ["920455", "汇隆活塞", "bjs", 7.98, 7.95, 0.38, "2026-04-30"], ["920237", "力佳科技", "bjs", 19.72, 19.63, 0.46, "2026-04-30"], ["301185", "鸥玛软件", "cyb", 18.09, 18.0, 0.51, "2026-04-30"], ["688259", "创耀科技", "kcb", 38.32, 38.08, 0.63, "2026-04-30"], ["688075", "安旭生物", "kcb", 37.42, 37.17, 0.67, "2026-04-30"], ["300074", "华平股份", "cyb", 4.41, 4.38, 0.77, "2026-04-30"]], "tier2": [["300266", "兴源环境", "cyb", 2.43, 2.43, 0.0, "2026-04-30"], ["688595", "芯海科技", "kcb", 34.26, 34.26, 0.0, "2026-04-30"], ["688443", "智翔金泰", "kcb", 29.62, 29.63, -0.02, "2026-04-30"], ["301221", "光庭信息", "cyb", 47.84, 47.87, -0.06, "2026-04-30"], ["920171", "志晟信息", "bjs", 20.45, 20.47, -0.09, "2026-04-30"], ["300119", "瑞普生物", "cyb", 18.0, 18.02, -0.13, "2026-04-30"], ["300993", "玉马科技", "cyb", 12.24, 12.26, -0.19, "2026-04-30"], ["300375", "鹏翎股份", "cyb", 4.81, 4.82, -0.2, "2026-04-30"], ["301591", "肯特股份", "cyb", 39.89, 39.97, -0.2, "2026-04-30"], ["300908", "仲景食品", "cyb", 28.7, 28.77, -0.23, "2026-04-30"], ["300381", "溢多利", "cyb", 6.92, 6.94, -0.33, "2026-04-30"], ["301595", "太力科技", "cyb", 44.62, 44.77, -0.33, "2026-04-30"], ["920087", "秋乐种业", "bjs", 13.58, 13.63, -0.34, "2026-04-30"], ["920167", "同享科技", "bjs", 19.3, 19.38, -0.44, "2026-04-30"], ["920221", "易实精密", "bjs", 15.1, 15.17, -0.44, "2026-04-30"]], "tier1_count": 1136, "tier2_count": 161}, "generated_at": "2026-05-05 01:47:07"};
+
+function bd(code){
+  if(code.startsWith('300')||code.startsWith('301')) return '<span class="board bd-cyb">创</span>';
+  if(code.startsWith('688')) return '<span class="board bd-kcb">科</span>';
+  return '<span class="board bd-bj">北</span>';
+}
 
 function render(){
-  document.getElementById('time').textContent = new Date().toLocaleString('zh-CN');
+  document.getElementById('update-time').textContent = DATA.generated_at || '--';
   
-  if(!DATA.sentiment) return;
   const s = DATA.sentiment;
-  const badge = s.sentiment==='积极'?'badge-bull':(s.sentiment==='低迷'?'badge-bear':'badge-neutral');
-  const emoji = s.sentiment==='积极'?'🟢':(s.sentiment==='低迷'?'🔴':'🟡');
-  document.getElementById('sentiment-area').innerHTML = 
-    `<span class="badge ${badge}">${emoji} ${s.sentiment}</span>
-     <span class="stat">仓位: <b>${s.position}</b></span>
-     <span class="stat">涨跌比: <b>${s.ad_ratio}</b></span>
-     <span class="stat">↑<b>${s.total_up}</b> ↓<b>${s.total_down}</b></span>`;
-  
-  let idxHtml = '';
-  for(const [k,v] of Object.entries(s.indices||{})){
-    if(v.error) continue;
-    const cls = v.change_pct>=0?'up':'down';
-    idxHtml += `<span class="stat">${k}: <b class="${cls}">${v.price.toFixed(1)} (${v.change_pct>=0?'+':''}${v.change_pct.toFixed(2)}%)</b></span> `;
+  if(s){
+    const emo = s.sentiment==='积极'?'🟢':(s.sentiment==='低迷'?'🔴':'🟡');
+    const cls = s.sentiment==='积极'?'bull':(s.sentiment==='低迷'?'bear':'neutral');
+    document.getElementById('sentiment-area').innerHTML = 
+      `<div class="sentiment-bar">
+        <span class="emoji">${emoji[s.sentiment]||'📊'}</span>
+        <div>
+          <span class="big-label ${cls}">${s.sentiment}</span>
+          <div class="meta">仓位: <b>${s.position}</b> · 涨跌比 <b>${s.ad_ratio}</b> · ↑<b>${s.total_up}</b> ↓<b>${s.total_down}</b></div>
+        </div>
+      </div>`;
   }
-  document.getElementById('indices-area').innerHTML = idxHtml;
   
+  // 指数
+  if(s && s.indices){
+    let h='';
+    for(const [k,v] of Object.entries(s.indices)){
+      if(v.error) continue;
+      const cls2 = v.change_pct>=0?'up':'down';
+      h += `<div class="idx-item">${k}<br><span class="val">${v.price.toFixed(1)}</span> <span class="${cls2}">${v.change_pct>=0?'+':''}${v.change_pct.toFixed(2)}%</span></div>`;
+    }
+    document.getElementById('indices-area').innerHTML = h;
+  }
+  
+  // 板块
   if(DATA.sectors){
-    let secHtml = '';
-    DATA.sectors.slice(0,12).forEach((sec,i) => {
-      const cls = i<3?'hot':(i<6?'warm':'');
-      secHtml += `<span class="sector-tag ${cls}">${sec.name} ${sec.change_pct>=0?'+':''}${sec.change_pct.toFixed(1)}%</span>`;
+    let h='';
+    DATA.sectors.slice(0,12).forEach((sec,i)=>{
+      const cls3 = sec.change_pct>=0?'up':'down';
+      h += `<div class="sec-row"><span class="rank">${i+1}</span><span class="name">${sec.name}</span><span class="chg ${cls3}">${sec.change_pct>=0?'+':''}${sec.change_pct.toFixed(1)}%</span></div>`;
     });
-    document.getElementById('sectors-area').innerHTML = secHtml;
+    document.getElementById('sectors-area').innerHTML = h;
   }
   
-  function renderStocks(id, stocks){
+  function rStocks(id, countId, stocks){
+    const el = document.getElementById(id);
+    const cnt = document.getElementById(countId);
     if(!stocks || stocks.length===0){
-      document.getElementById(id).innerHTML = '<tr><td colspan="6" style="color:#8b949e">暂无数据</td></tr>';
+      el.innerHTML = '<tr><td colspan="5" style="color:var(--dim)">--</td></tr>';
       return;
     }
-    let html = '';
+    cnt.textContent = `(${stocks.length})`;
+    let h='';
     stocks.forEach(s => {
-      const board = s[2]==='cyb'?'创':(s[2]==='kcb'?'科':'北');
-      const chipCls = s[2]==='cyb'?'chip-cyb':(s[2]==='kcb'?'chip-kcb':'chip-bj');
-      const devCls = s[5]>=0?'up':'down';
-      html += `<tr>
-        <td><span class="chip ${chipCls}">${board}</span> ${s[0]}</td>
-        <td>${s[1]}</td><td style="color:#8b949e">${s[6]||''}</td>
-        <td>${s[3].toFixed(1)}</td><td>${s[4].toFixed(1)}</td>
-        <td class="${devCls}">${s[5]>=0?'+':''}${s[5].toFixed(1)}%</td>
+      const cls4 = s[5]>=0?'up':'down';
+      h += `<tr>
+        <td>${bd(s[0])}<span class="code">${s[0]}</span></td>
+        <td>${s[1]}</td>
+        <td>${s[3].toFixed(1)}</td>
+        <td>${s[4].toFixed(1)}</td>
+        <td class="${cls4}">${s[5]>=0?'+':''}${s[5].toFixed(1)}%</td>
       </tr>`;
     });
-    document.getElementById(id).innerHTML = html;
+    el.innerHTML = h;
   }
   
   if(DATA.stocks){
-    renderStocks('tier1-area', DATA.stocks.tier1?.slice(0,15));
-    renderStocks('tier2-area', DATA.stocks.tier2?.slice(0,15));
+    rStocks('tier1-area','t1-count', DATA.stocks.tier1?.slice(0,15));
+    rStocks('tier2-area','t2-count', DATA.stocks.tier2?.slice(0,15));
   }
 }
 
-window.onload = render;
+const emoji = {'积极':'🚀','中性':'⏸️','低迷':'⚠️'};
+if(DATA.sentiment) render();
+else document.getElementById('sentiment-area').innerHTML = '<span style="color:var(--dim)">等待开盘数据...</span>';
 </script>
 </body>
 </html>
